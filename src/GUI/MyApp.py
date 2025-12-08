@@ -3,16 +3,9 @@ from PySide6.QtWidgets import QMainWindow, QWidget, QGridLayout, QListWidget, QL
 from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtCore import Qt, QSize
 from .smallWidgets import buttonMainMenu
-<<<<<<< HEAD
 from .constants import ICON2_PATH, WINDOW_HEIGTH, WINDOW_WIDTH
-=======
-from GUI.constants import ICON2_PATH, WINDOW_HEIGTH, WINDOW_WIDTH
 from imageRequest.Download import Download
-<<<<<<< HEAD
 from pathlib import Path
-=======
->>>>>>> 52ae4ee026b4cdd12a0bfb16318927f4076cf565
->>>>>>> 89f4fa2aa6ac21a8e46386d9b981268df5f6f7f9
 import sys
 
   
@@ -24,6 +17,7 @@ class MyWindow(QMainWindow):
         self.setFixedSize(WINDOW_HEIGTH, WINDOW_WIDTH)
         self.setWindowIcon(QIcon(ICON2_PATH)) # Troca o icone da janela
         self.showMainMenu()  # Mostra a primeira janela
+        self.selectedImage = None
   
   
     # Renderiza o menu principal da aplicacao 
@@ -90,13 +84,10 @@ class MyWindow(QMainWindow):
 
         for arquivo in diretorio.iterdir():
             if arquivo.suffix.lower() in extensoes:
-
                 pixmap = QPixmap(str(arquivo)).scaled(128, 128)
                 icon = QIcon(pixmap)
-
                 item = QListWidgetItem(icon, arquivo.name)
                 item.setData(32, str(arquivo))  # guarda o caminho completo
-
                 self.listaImagens.addItem(item)
 
     # Sai da aplicacao
