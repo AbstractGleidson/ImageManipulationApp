@@ -4,7 +4,7 @@ from PySide6.QtWidgets import QGridLayout, QVBoxLayout, QPushButton, QLabel
 from PySide6.QtGui import QFont, QIcon
 from PySide6.QtCore import Qt
 from .smallWidgets import buttonMainMenu
-from GUI.constants import ICON2_PATH, WINDOW_HEIGTH, WINDOW_WIDTH
+from .constants import ICON2_PATH, WINDOW_HEIGTH, WINDOW_WIDTH
 import sys
 
   

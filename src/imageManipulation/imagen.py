@@ -34,7 +34,7 @@ class Image:
     def negativeImage(self):
         return -self.imagem_data
     
-    def cartooImage(self):
+    def cartoonImage(self):
         
         gray_image = self.imageGrayScale()
         
