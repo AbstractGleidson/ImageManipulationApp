@@ -9,7 +9,7 @@ O sistema permite carregar imagens locais ou baixar **imagens públicas da inter
 - Gleidson Luan Sena Alves
 - Ivan Vitor Dias de Oliveira
 - Antonio Gemesson Sousa de Oliveira
-- Hillan
+- Hillan Alves de Sousa
 - Athur Sobreira 
 
 ---
