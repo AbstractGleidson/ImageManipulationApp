@@ -45,7 +45,7 @@ O sistema permite carregar imagens locais ou baixar **imagens públicas da inter
 Com Python instalado, execute:
 
 ```` bash
-git clone "https:github.com/AbstractGleidson/ImageManipulationApp.git"
+git clone "https://github.com/AbstractGleidson/ImageManipulationApp.git"
 cd ImageManipulationApp 
 pip install -r requirements.txt
 cd src 
