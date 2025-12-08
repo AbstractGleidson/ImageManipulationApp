@@ -29,18 +29,22 @@ class MyWindow(QMainWindow):
         button_select_image = buttonMainMenu("Selecionar Imagem")
         button_select_image.clicked.connect(self.selectImage) # Adiciona funcao para esse botao
 
+        button_apply_filter = buttonMainMenu("Aplicar Filtros")
+        button_apply_filter.clicked.connect(self.applyFilter) # Adiciona funcao para esse botao
+
         # Mostra as imagens disponíveis para a manipulação
         button_list_images = buttonMainMenu("Listar Imagens")
         button_list_images.clicked.connect(self.listIMages) # Adiciona funcao para esse botao
         
         # Sai da aplicacao
-        button_report = buttonMainMenu("Sair")
-        button_report.clicked.connect(self.exitAplication) # Adiciona funcao para esse botao
+        button_exit = buttonMainMenu("Sair")
+        button_exit.clicked.connect(self.exitAplication) # Adiciona funcao para esse botao
   
         # Adiciona os botoes no layout
         layout.addWidget(button_select_image, alignment=CENTER)
+        layout.addWidget(button_apply_filter, alignment=CENTER)
         layout.addWidget(button_list_images, alignment=CENTER)
-        
+        layout.addWidget(button_exit, alignment=CENTER)
         widget.setLayout(layout) # Adiciona o layout no widget generico
   
         self.setCentralWidget(widget)  # Renderiza esse widget generico que foi criado 
@@ -49,7 +53,8 @@ class MyWindow(QMainWindow):
         pass
     def listIMages(self):
         pass
-
+    def applyFilter(self):
+        pass
     # Sai da aplicacao
     def exitAplication(self):
         sys.exit()
