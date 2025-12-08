@@ -1,11 +1,11 @@
 # Cria de fato a interface da aplicacao
-from PySide6.QtWidgets import QMainWindow, QWidget, QMessageBox, QInputDialog, QListWidget
-from PySide6.QtWidgets import QGridLayout, QVBoxLayout, QPushButton, QLabel
-from PySide6.QtGui import QFont, QIcon
-from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QMainWindow, QWidget, QGridLayout, QListWidget, QListWidgetItem, QVBoxLayout, QListView
+from PySide6.QtGui import QIcon, QPixmap
+from PySide6.QtCore import Qt, QSize
 from .smallWidgets import buttonMainMenu
 from GUI.constants import ICON2_PATH, WINDOW_HEIGTH, WINDOW_WIDTH
 from imageRequest.Download import Download
+from pathlib import Path
 import sys
 
   
@@ -53,9 +53,45 @@ class MyWindow(QMainWindow):
     def selectImage(self):
         pass
     def listIMages(self):
-        pass
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+
+        # Criar lista de imagens
+        self.listaImagens = QListWidget()
+        self.listaImagens.setViewMode(QListWidget.ViewMode.IconMode)
+        self.listaImagens.setResizeMode(QListWidget.ResizeMode.Adjust)
+        self.listaImagens.setIconSize(QSize(128, 128))
+        self.listaImagens.setSpacing(10)
+        botao_voltar = buttonMainMenu("Voltar")
+        botao_voltar.clicked.connect(self.showMainMenu)
+
+
+        layout.addWidget(self.listaImagens)
+        layout.addWidget(botao_voltar)
+
+        self.setCentralWidget(widget)
+
+        # Carregar imagens do diretório
+        self.carregar_imagens()
     def applyFilter(self):
         pass
+    def carregar_imagens(self):
+        diretorio = Path("assets/Imagens")
+        extensoes = [".jpg", ".jpeg", ".png"]
+
+        self.listaImagens.clear()
+
+        for arquivo in diretorio.iterdir():
+            if arquivo.suffix.lower() in extensoes:
+
+                pixmap = QPixmap(str(arquivo)).scaled(128, 128)
+                icon = QIcon(pixmap)
+
+                item = QListWidgetItem(icon, arquivo.name)
+                item.setData(32, str(arquivo))  # guarda o caminho completo
+
+                self.listaImagens.addItem(item)
+
     # Sai da aplicacao
     def exitAplication(self):
         sys.exit()

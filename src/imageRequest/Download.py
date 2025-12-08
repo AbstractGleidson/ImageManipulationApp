@@ -56,4 +56,4 @@ class Download:
         return destino_final
     
 down = Download()
-print(down.getImagem("https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"))
+#print(down.getImagem("https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"))
