@@ -75,6 +75,45 @@ class MyWindow(QMainWindow):
         # Carregar imagens do diretório
         self.carregar_imagens()
     def applyFilter(self):
+        if not self.selectedImage:
+            messageDialog(self, "ERRO", "Selecione uma imagem primeiro!")
+            return
+        CENTER = Qt.AlignmentFlag.AlignCenter
+        
+        widget = QWidget()
+        layout = QVBoxLayout()
+        
+        button_cinza = buttonMainMenu("Escala de Cinza") # Botão filtro cinza
+        button_cinza.clicked.connect(...)
+        
+        button_preto_branco = buttonMainMenu("Preto e Branco")  # Botão filtro preto e branco
+        button_preto_branco.clicked.connect(...)
+        
+        button_cartoon = buttonMainMenu("Cartoon")              # Botão filtro cartoon 
+        button_cartoon.clicked.connect(...)
+        
+        button_negativo = buttonMainMenu("Foto Negativa")       # Botão filtro negativo 
+        button_negativo.clicked.connect(...)
+        
+        button_contorno = buttonMainMenu("Contorno")            # Botão filtro contorno
+        button_contorno.clicked.connect(...)
+
+        button_blurred = buttonMainMenu("Borrado")              # Botão filtro borrado
+        button_blurred.clicked.connect(...)
+
+        button_voltar = buttonMainMenu("Voltar ao Menu")        # Botão menu
+        button_voltar.clicked.connect(self.showMainMenu)
+        
+        layout.addWidget(button_cinza, alignment=CENTER)
+        layout.addWidget(button_preto_branco, alignment=CENTER)
+        layout.addWidget(button_cartoon, alignment=CENTER)
+        layout.addWidget(button_negativo, alignment=CENTER)
+        layout.addWidget(button_contorno, alignment=CENTER)
+        layout.addWidget(button_blurred, alignment=CENTER)
+        layout.addWidget(button_voltar, alignment=CENTER)
+        
+        widget.setLayout(layout)
+        self.setCentralWidget(widget)
         pass
     def carregar_imagens(self):
         diretorio = Path("assets/Imagens")
