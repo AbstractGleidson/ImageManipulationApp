@@ -1,5 +1,5 @@
 # Cria de fato a interface da aplicacao
-from PySide6.QtWidgets import QMainWindow, QWidget, QGridLayout, QListWidget, QListWidgetItem, QVBoxLayout, QListView
+from PySide6.QtWidgets import QMainWindow, QWidget, QLineEdit, QListWidget, QListWidgetItem, QVBoxLayout, QMessageBox
 from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtCore import Qt, QSize
 from .smallWidgets import buttonMainMenu
@@ -52,7 +52,50 @@ class MyWindow(QMainWindow):
         self.setCentralWidget(widget)  # Renderiza esse widget generico que foi criado 
     
     def selectImage(self):
-        pass
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+
+        # Campo de entrada da URL
+        self.inputUrl = QLineEdit()
+        self.inputUrl.setPlaceholderText("Digite a URL da imagem (.jpg ou .png)")
+        layout.addWidget(self.inputUrl)
+
+        # Botão para baixar/importar
+        btnImportar = buttonMainMenu("Importar imagem")
+        btnImportar.clicked.connect(self.importarURL)
+        layout.addWidget(btnImportar)
+
+        # Botão voltar
+        btnVoltar = buttonMainMenu("Voltar")
+        btnVoltar.clicked.connect(self.showMainMenu)
+        layout.addWidget(btnVoltar)
+
+        self.setCentralWidget(widget)
+
+    def importarURL(self):
+        url = self.inputUrl.text().strip()
+
+        if not url:
+            QMessageBox.warning(self, "Aviso", "Digite uma URL primeiro.")
+            return
+
+        try:
+            downloader = Download()
+            destino = downloader.getImagem(url, "assets/Imagens")
+
+            QMessageBox.information(
+                self,
+                "Sucesso",
+                f"Imagem baixada e salva em:\n{destino}"
+            )
+
+        except Exception as e:
+            QMessageBox.critical(
+                self,
+                "Erro",
+                f"Não foi possível baixar a imagem:\n{str(e)}"
+            )
+
     def listIMages(self):
         widget = QWidget()
         layout = QVBoxLayout(widget)
