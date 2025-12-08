@@ -5,7 +5,7 @@ from PySide6.QtGui import QFont, QIcon
 from PySide6.QtCore import Qt
 from .smallWidgets import buttonMainMenu
 from GUI.constants import ICON2_PATH, WINDOW_HEIGTH, WINDOW_WIDTH
-from ..imageRequest.Download import Download
+from imageRequest.Download import Download
 import sys
 
   

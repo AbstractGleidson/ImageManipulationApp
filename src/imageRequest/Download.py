@@ -56,4 +56,4 @@ class Download:
         return destino_final
     
 down = Download()
-print(down.getImagem("../../"))
+#print(down.getImagem("../../"))
