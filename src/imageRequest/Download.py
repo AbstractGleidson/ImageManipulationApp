@@ -7,7 +7,8 @@ class Download:
         self.formatosValidos= (".jpg", ".png")
 
     #Recebe uma string de caminho que indica uma imagem. Caso seja uma url, realiza um download 
-    #para o destino, senão copia da origem para o destino
+    #para o destino, senão copia da origem para o destino. Por padrão, o destino é a pasta imagens que vai
+    #na estrutura da aplicação
     def getImagem(self, caminho, destino = "../../assets/Imagens"):
 
         if self.ehUrl(caminho):
