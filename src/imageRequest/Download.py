@@ -4,7 +4,7 @@ import shutil
 
 class Download:
     def __init__(self):
-        self.formatosValidos= (".jpg", ".png")
+        self.formatosValidos = (".jpg", ".png")
 
     #Recebe uma string de caminho que indica uma imagem. Caso seja uma url, realiza um download 
     #para o destino, senão copia da origem para o destino. Por padrão, o destino é a pasta imagens que vai
