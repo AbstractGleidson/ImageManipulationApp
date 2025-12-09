@@ -96,6 +96,35 @@ class Image:
         
         return self.saveImage(cartoon, "cartoon")
     
+    def contourImage(self):
+
+        """
+        Aplica um filtro cinza e um desfoque Gaussiano na imagem
+        e delimita contornos
+        Returns:
+            A imagem com os contornos detectados.
+        """
+
+        greyImage = openCv.cvtColor(self.imagem_data, openCv.COLOR_BGR2GRAY)
+    
+        blurImage = openCv.GaussianBlur(greyImage, (5, 5), 0)
+    
+        contour = openCv.Canny(blurImage, 100, 200)
+    
+        return self.saveImage(contour, "contour")
+
+    
+    def blurredImage(self):
+        """
+        Aplica o filtro de Desfoque Gaussiano na imagem
+        Returns:
+            A imagem com desfoque aplicado.
+        """
+
+        blurred = openCv.GaussianBlur(self.imagem_data, (15, 15), 0)
+    
+        return self.saveImage(blurred, 'blurred')
+    
     def validationFormat(self, path_image: str):
         """
         Verifica o formato da imagem e retorna se é um formato valido
@@ -131,6 +160,8 @@ class Image:
             return f"Imagem salva em: {savePath}"
         else:
             raise SaveImageError("Não foi possivel salvar a imagem!") 
+        
+    
 
 # if __name__ == "__main__":
     

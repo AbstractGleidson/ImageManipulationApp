@@ -85,7 +85,7 @@ class MyWindow(QMainWindow):
 
         try:
             downloader = Download()
-            destino = downloader.getImagem(url, "assets/Imagens")
+            destino = downloader.getImagem(url, str(Path(__file__).parent.parent.parent / Path("assets/Imagens")))
             self.selectedImage = str(destino)
             QMessageBox.information(
                 self,
@@ -166,12 +166,12 @@ class MyWindow(QMainWindow):
         
         button_contorno = buttonMainMenu("Contorno")            # Botão filtro contorno
         button_contorno.clicked.connect(
-            lambda: self.atribuição_imagem("...","Contorno")
+            lambda: self.atribuição_imagem("contourImage","Contorno")
         )
 
         button_blurred = buttonMainMenu("Borrado")              # Botão filtro borrado
         button_blurred.clicked.connect(
-            lambda: self.atribuição_imagem("...","Borrado")
+            lambda: self.atribuição_imagem("blurredImage","Borrado")
         )
 
         button_voltar = buttonMainMenu("Voltar ao Menu")        # Botão menu
@@ -215,8 +215,8 @@ class MyWindow(QMainWindow):
             self.showMainMenu()
             
     def _carregar_imagens(self):
-        diretorio = Path("assets/Imagens")
-        extensoes = [".jpg", ".jpeg", ".png"]
+        diretorio = Path(__file__).parent.parent.parent / Path("assets/Imagens")
+        extensoes = [".jpg", ".png"]
 
         self.listaImagens.clear()
 
