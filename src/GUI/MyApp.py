@@ -21,10 +21,12 @@ class MyWindow(QMainWindow):
         self.setWindowIcon(QIcon(ICON2_PATH)) # Troca o icone da janela
         self.showMainMenu()  # Mostra a primeira janela
         self.selectedImage = None
+        
   
   
     # Renderiza o menu principal da aplicacao 
     def showMainMenu(self):
+        self.listaImagens = None
         CENTER = Qt.AlignmentFlag.AlignCenter # Cria um centralizacao 
   
         widget = QWidget() # Widget generico
@@ -52,6 +54,7 @@ class MyWindow(QMainWindow):
         self.setCentralWidget(widget)  # Renderiza esse widget generico que foi criado 
     
     def selectImage(self):
+        self.listaImagens = None
         widget = QWidget()
         layout = QVBoxLayout(widget)
 
@@ -71,8 +74,8 @@ class MyWindow(QMainWindow):
         # Botão voltar
         btnVoltar = buttonMainMenu("Voltar")
         btnVoltar.clicked.connect(self.showMainMenu)
-        layout.addWidget(btnVoltar)
         layout.addWidget(botao_editar)
+        layout.addWidget(btnVoltar)
 
         self.setCentralWidget(widget)
 
@@ -101,6 +104,7 @@ class MyWindow(QMainWindow):
             )
 
     def listImages(self):
+        self.listaImagens = None
         widget = QWidget()
         layout = QVBoxLayout(widget)
 
@@ -119,8 +123,8 @@ class MyWindow(QMainWindow):
         botao_editar.clicked.connect(self._editar_imagem)
 
         layout.addWidget(self.listaImagens)
-        layout.addWidget(botao_voltar)
         layout.addWidget(botao_editar)
+        layout.addWidget(botao_voltar)
 
         self.setCentralWidget(widget)
 
@@ -215,6 +219,10 @@ class MyWindow(QMainWindow):
             self.showMainMenu()
             
     def _carregar_imagens(self):
+        if not isinstance(self.listaImagens, QListWidget):
+        # Lista não existe ou já foi destruída → não faz nada
+            return
+    
         diretorio = Path(__file__).parent.parent.parent / Path("assets/Imagens")
         extensoes = [".jpg", ".png"]
 
@@ -244,9 +252,13 @@ class MyWindow(QMainWindow):
 
     def _editar_imagem(self):
         item = None
-
-        if hasattr(self, "listaImagens"):
-            item = self.listaImagens.currentItem()
+        # Verifica se a lista existe e se o objeto NÃO foi destruído pelo Qt
+        if isinstance(self.listaImagens, QListWidget):
+            try:
+                item = self.listaImagens.currentItem()
+            except RuntimeError:
+                self.listaImagens = None
+                item = None
 
         if item is None:
             if not self.selectedImage:
