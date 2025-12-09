@@ -2,7 +2,8 @@
 from PySide6.QtWidgets import QMainWindow, QWidget, QLineEdit, QListWidget, QListWidgetItem, QVBoxLayout, QMessageBox
 from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtCore import Qt, QSize
-from .smallWidgets import buttonMainMenu
+from .smallWidgets import buttonMainMenu,messageDialog
+from imagen import Image
 from .constants import ICON2_PATH, WINDOW_HEIGTH, WINDOW_WIDTH
 from imageRequest.Download import Download
 from pathlib import Path
@@ -82,7 +83,7 @@ class MyWindow(QMainWindow):
         try:
             downloader = Download()
             destino = downloader.getImagem(url, "assets/Imagens")
-
+            self.selectedImage = destino
             QMessageBox.information(
                 self,
                 "Sucesso",
@@ -126,23 +127,35 @@ class MyWindow(QMainWindow):
         widget = QWidget()
         layout = QVBoxLayout()
         
-        button_cinza = buttonMainMenu("Escala de Cinza") # Botão filtro cinza
-        button_cinza.clicked.connect(...)
+        button_cinza = buttonMainMenu("Escala de Cinza")
+        button_cinza.clicked.connect(
+            lambda: self.atribuição_imagem("imageGrayScale", "Escala de Cinza")
+        )
         
-        button_preto_branco = buttonMainMenu("Preto e Branco")  # Botão filtro preto e branco
-        button_preto_branco.clicked.connect(...)
+        button_preto_branco = buttonMainMenu("Preto e Branco")
+        button_preto_branco.clicked.connect(
+            lambda: self.atribuição_imagem("binaryImage", "Preto e Branco")
+        )
         
-        button_cartoon = buttonMainMenu("Cartoon")              # Botão filtro cartoon 
-        button_cartoon.clicked.connect(...)
+        button_cartoon = buttonMainMenu("Cartoon")
+        button_cartoon.clicked.connect(
+            lambda: self.atribuição_imagem("cartoonImage", "Cartoon")
+        )
         
-        button_negativo = buttonMainMenu("Foto Negativa")       # Botão filtro negativo 
-        button_negativo.clicked.connect(...)
+        button_negativo = buttonMainMenu("Foto Negativa")
+        button_negativo.clicked.connect(
+            lambda: self.atribuição_imagem("negativeImage", "Foto Negativa")
+        )
         
         button_contorno = buttonMainMenu("Contorno")            # Botão filtro contorno
-        button_contorno.clicked.connect(...)
+        button_contorno.clicked.connect(
+            lambda: self.atribuição_imagem("...","Contorno")
+        )
 
         button_blurred = buttonMainMenu("Borrado")              # Botão filtro borrado
-        button_blurred.clicked.connect(...)
+        button_blurred.clicked.connect(
+            lambda: self.atribuição_imagem("...","Borrado")
+        )
 
         button_voltar = buttonMainMenu("Voltar ao Menu")        # Botão menu
         button_voltar.clicked.connect(self.showMainMenu)
@@ -158,6 +171,31 @@ class MyWindow(QMainWindow):
         widget.setLayout(layout)
         self.setCentralWidget(widget)
         pass
+
+    def atribuição_imagem(self, nome_metodo: str, nome_filtro: str):
+        try:
+            
+            imagem_obj = Image(self.selectedImage)
+                       
+            metodo = getattr(imagem_obj, nome_metodo)
+                        
+            resultado = metodo()
+                        
+            messageDialog(
+                self,
+                f"SUCESSO - {nome_filtro}",
+                f"Filtro {nome_filtro} aplicado com sucesso!\n\n{resultado}"
+            )
+            
+            self.showMainMenu()
+        except Exception as e:
+            messageDialog(
+                self,
+                "ERRO",
+                f"Nao foi possivel aplicar o filtro {nome_filtro}:\n{str(e)}",
+                icon=QMessageBox.Icon.Critical
+            )
+            self.showMainMenu()
     def carregar_imagens(self):
         diretorio = Path("assets/Imagens")
         extensoes = [".jpg", ".jpeg", ".png"]
