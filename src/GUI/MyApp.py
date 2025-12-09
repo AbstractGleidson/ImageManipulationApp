@@ -7,6 +7,8 @@ from imageManipulation.imagen import Image
 from .constants import ICON2_PATH, WINDOW_HEIGTH, WINDOW_WIDTH
 from imageRequest.Download import Download
 from pathlib import Path
+from urllib.parse import urlparse
+import os
 import sys
 
   
@@ -32,12 +34,10 @@ class MyWindow(QMainWindow):
         button_select_image = buttonMainMenu("Selecionar Imagem")
         button_select_image.clicked.connect(self.selectImage) # Adiciona funcao para esse botao
 
-        button_apply_filter = buttonMainMenu("Aplicar Filtros")
-        button_apply_filter.clicked.connect(self.applyFilter) # Adiciona funcao para esse botao
-
-        # Mostra as imagens disponíveis para a manipulação
+       
+       # Mostra as imagens disponíveis para a manipulação
         button_list_images = buttonMainMenu("Listar Imagens")
-        button_list_images.clicked.connect(self.listIMages) # Adiciona funcao para esse botao
+        button_list_images.clicked.connect(self.listImages) # Adiciona funcao para esse botao
         
         # Sai da aplicacao
         button_exit = buttonMainMenu("Sair")
@@ -45,7 +45,6 @@ class MyWindow(QMainWindow):
   
         # Adiciona os botoes no layout
         layout.addWidget(button_select_image, alignment=CENTER)
-        layout.addWidget(button_apply_filter, alignment=CENTER)
         layout.addWidget(button_list_images, alignment=CENTER)
         layout.addWidget(button_exit, alignment=CENTER)
         widget.setLayout(layout) # Adiciona o layout no widget generico
@@ -66,10 +65,14 @@ class MyWindow(QMainWindow):
         btnImportar.clicked.connect(self.importarURL)
         layout.addWidget(btnImportar)
 
+        botao_editar = buttonMainMenu("Editar")
+        botao_editar.clicked.connect(self._editar_imagem)
+
         # Botão voltar
         btnVoltar = buttonMainMenu("Voltar")
         btnVoltar.clicked.connect(self.showMainMenu)
         layout.addWidget(btnVoltar)
+        layout.addWidget(botao_editar)
 
         self.setCentralWidget(widget)
 
@@ -83,7 +86,7 @@ class MyWindow(QMainWindow):
         try:
             downloader = Download()
             destino = downloader.getImagem(url, "assets/Imagens")
-            self.selectedImage = destino
+            self.selectedImage = str(destino)
             QMessageBox.information(
                 self,
                 "Sucesso",
@@ -97,27 +100,41 @@ class MyWindow(QMainWindow):
                 f"Não foi possível baixar a imagem:\n{str(e)}"
             )
 
-    def listIMages(self):
+    def listImages(self):
         widget = QWidget()
         layout = QVBoxLayout(widget)
 
         # Criar lista de imagens
         self.listaImagens = QListWidget()
+        self.listaImagens.setSelectionMode(QListWidget.SelectionMode.SingleSelection)  # permitir selecionar 1 imagem
         self.listaImagens.setViewMode(QListWidget.ViewMode.IconMode)
         self.listaImagens.setResizeMode(QListWidget.ResizeMode.Adjust)
         self.listaImagens.setIconSize(QSize(128, 128))
         self.listaImagens.setSpacing(10)
+        self.listaImagens.itemClicked.connect(self._on_item_clicked)
+
         botao_voltar = buttonMainMenu("Voltar")
         botao_voltar.clicked.connect(self.showMainMenu)
-
+        botao_editar = buttonMainMenu("Editar")
+        botao_editar.clicked.connect(self._editar_imagem)
 
         layout.addWidget(self.listaImagens)
         layout.addWidget(botao_voltar)
+        layout.addWidget(botao_editar)
 
         self.setCentralWidget(widget)
 
         # Carregar imagens do diretório
-        self.carregar_imagens()
+        self._carregar_imagens()
+
+    def _on_item_clicked(self, item: QListWidgetItem):
+        """Atualiza selectedImage para o caminho da imagem quando o usuário clica na lista."""
+        if item is None:
+            self.selectedImage = None
+        else:
+            caminho = item.data(32)
+            self.selectedImage = str(caminho)
+        
     def applyFilter(self):
         if not self.selectedImage:
             messageDialog(self, "ERRO", "Selecione uma imagem primeiro!")
@@ -170,7 +187,7 @@ class MyWindow(QMainWindow):
         
         widget.setLayout(layout)
         self.setCentralWidget(widget)
-        pass
+        
 
     def atribuição_imagem(self, nome_metodo: str, nome_filtro: str):
         try:
@@ -196,7 +213,8 @@ class MyWindow(QMainWindow):
                 icon=QMessageBox.Icon.Critical
             )
             self.showMainMenu()
-    def carregar_imagens(self):
+            
+    def _carregar_imagens(self):
         diretorio = Path("assets/Imagens")
         extensoes = [".jpg", ".jpeg", ".png"]
 
@@ -205,10 +223,40 @@ class MyWindow(QMainWindow):
         for arquivo in diretorio.iterdir():
             if arquivo.suffix.lower() in extensoes:
                 pixmap = QPixmap(str(arquivo)).scaled(128, 128)
-                icon = QIcon(pixmap)
-                item = QListWidgetItem(icon, arquivo.name)
-                item.setData(32, str(arquivo))  # guarda o caminho completo
+                nome = self.nome_resumido(arquivo.name)
+                item = QListWidgetItem(QIcon(pixmap), nome)
+                item.setData(32, str(arquivo))
                 self.listaImagens.addItem(item)
+
+        if self.listaImagens.count() > 0:
+            item = self.listaImagens.item(0)
+            self.listaImagens.setCurrentItem(item)
+            self.selectedImage = item.data(32)
+
+
+    def nome_resumido(self, url, max_len=35):
+        # pega apenas o nome do arquivo
+        nome = os.path.basename(urlparse(url).path)
+        # se ainda for grande, trunca
+        if len(nome) > max_len:
+            return nome[:20] + "..." + nome[-10:]
+        return nome
+
+    def _editar_imagem(self):
+        item = None
+
+        if hasattr(self, "listaImagens"):
+            item = self.listaImagens.currentItem()
+
+        if item is None:
+            if not self.selectedImage:
+                QMessageBox.warning(self, "Nenhuma imagem", "Selecione uma imagem para editar.")
+                return
+        else:
+            self.selectedImage = str(item.data(32))
+
+        self.applyFilter()
+
 
     # Sai da aplicacao
     def exitAplication(self):
