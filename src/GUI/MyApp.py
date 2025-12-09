@@ -3,7 +3,7 @@ from PySide6.QtWidgets import QMainWindow, QWidget, QLineEdit, QListWidget, QLis
 from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtCore import Qt, QSize
 from .smallWidgets import buttonMainMenu,messageDialog
-from imagen import Image
+from imageManipulation.imagen import Image
 from .constants import ICON2_PATH, WINDOW_HEIGTH, WINDOW_WIDTH
 from imageRequest.Download import Download
 from pathlib import Path
