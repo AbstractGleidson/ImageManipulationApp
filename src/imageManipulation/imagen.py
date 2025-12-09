@@ -2,8 +2,8 @@ import cv2 as openCv
 import numpy
 from pathlib import Path
 import os
-from InvalidFormatImage import InvalidFormatImage
-from saveImageError import SaveImageError
+from .InvalidFormatImage import InvalidFormatImage
+from .saveImageError import SaveImageError
 
 class Image:
     def __init__(self, image_path):
